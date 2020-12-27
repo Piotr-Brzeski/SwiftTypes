@@ -8,7 +8,7 @@
 import SwiftUI
 
 public struct YearPickerView: View {
-  @Binding var year: Year?
+  @Binding public var year: Year?
   
   public var body: some View {
     Picker("Year", selection: self.$year) {
