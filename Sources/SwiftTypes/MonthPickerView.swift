@@ -8,7 +8,11 @@
 import SwiftUI
 
 public struct MonthPickerView: View {
-  @Binding public var month: Month?
+  @Binding private var month: Month?
+  
+  public init(month: Binding<Month?>) {
+    self._month = month
+  }
   
   public var body: some View {
     Picker("Month", selection: self.$month) {
