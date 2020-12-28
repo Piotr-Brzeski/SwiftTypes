@@ -10,14 +10,27 @@ import SwiftUI
 public struct NumericField: View {
   private let key: String
   private let precision: Int
-  @Binding private var value: Double
+  @Binding private var doubleValue: Double
+  @Binding private var intValue: Int
   @State private var string: String
+  private let isInt: Bool
   
   public init(_ key: String, value: Binding<Double>, precision: Int = 2) {
     self.key = key
     self.precision = precision
-    self._value = value
+    self._doubleValue = value
+    self._intValue = Binding<Int>(get: {0}, set: {_ in})
     self._string = State<String>(initialValue: value.wrappedValue.string(precision: precision))
+    self.isInt = false
+  }
+  
+  public init(_ key: String, value: Binding<Int>) {
+    self.key = key
+    self.precision = 0
+    self._doubleValue = Binding<Double>(get: {0.0}, set: {_ in})
+    self._intValue = value
+    self._string = State<String>(initialValue: String(value.wrappedValue))
+    self.isInt = true
   }
   
   public var body: some View {
@@ -25,12 +38,21 @@ public struct NumericField: View {
       let newString = process(self.string)
       if newString != self.string {
         let newValue = Double(newString) ?? 0.0
-        if newValue != self.value {
-          self.value = newValue
+        if newValue != self.currentValue {
+          if self.isInt {
+            self.intValue = Int(newValue)
+          }
+          else {
+            self.doubleValue = newValue
+          }
         }
         self.string = newString
       }
     }).multilineTextAlignment(.trailing)
+  }
+  
+  private var currentValue: Double {
+    self.isInt ? Double(self.intValue) : self.doubleValue
   }
   
   private func isDigit(_ character: Character) -> Bool {
@@ -93,7 +115,12 @@ public struct NumericField: View {
 }
 
 struct NumericField_Previews: PreviewProvider {
-    static var previews: some View {
+  static var previews: some View {
+    VStack {
       NumericField("Test", value: .constant(10.0), precision: 3)
+        .padding()
+      NumericField("Test", value: .constant(100))
+        .padding()
     }
+  }
 }
