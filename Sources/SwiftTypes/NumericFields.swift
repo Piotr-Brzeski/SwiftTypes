@@ -1,5 +1,5 @@
 //
-//  NumericField.swift
+//  NumericFields.swift
 //  SwiftTypes
 //
 //  Created by Piotr Brzeski on 2020-08-15.
